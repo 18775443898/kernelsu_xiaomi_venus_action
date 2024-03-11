@@ -1,0 +1,101 @@
+name: build_kernelsu_for_venus
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps: 
+       - uses: actions/checkout@v1
+        
+       - name: Set swap to 10G
+         uses: pierotofy/set-swap-space@master
+         with:
+           swap-size-gb: 10
+
+       - name: Setup build kernel environment
+         run: |
+          sudo apt-get update
+          sudo apt install ccache curl git python-is-python3
+
+       - name: Download kernel source
+         run: |
+           cd /home/runner
+           git clone https://github.com/CZB666-wdnmd/kernel_xiaomi_sm8350.git -b udc-ksu --depth=1 kernel_sm8350
+           
+       - name: Prepare build tools
+         run: |
+           cd /home/runner
+           git clone https://github.com/LineageOS/android_prebuilts_tools-lineage --depth=1 tools-evolution
+           mkdir /home/runner/build-tools
+           cd /home/runner/build-tools
+           wget -O build-tools.tar.gz https://android.googlesource.com/platform/prebuilts/build-tools/+archive/9f5818bd6f5a82ecec8b18e0bf2dbd21c93fa7ee.tar.gz
+           tar xzvf build-tools.tar.gz
+           mkdir /home/runner/kernel-build-tools
+           cd /home/runner/kernel-build-tools
+           wget -O kernel-build-tools.tar.gz https://android.googlesource.com/kernel/prebuilts/build-tools/+archive/083e34d8c2c4239be4967172427268c267585951.tar.gz
+           tar xzvf kernel-build-tools.tar.gz
+           mkdir /home/runner/glibc
+           cd /home/runner/glibc
+           wget -O glibc.tar.gz https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+archive/0f4036126fd70c072d3b7bb7fda9dc05b6d218f5.tar.gz
+           tar xzvf glibc.tar.gz
+           mkdir /home/runner/clang
+           cd /home/runner/clang
+           wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r487747c.tar.gz
+           tar xzvf clang-r487747c.tar.gz
+           cd /home/runner/
+           git clone https://github.com/CZB666-wdnmd/kernelsu_xiaomi_equuleus_action.git origin
+           
+       - name: Patch kernel source
+         run: |
+           cd /home/runner/kernel_sm8350
+           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
+           cd /home/runner/kernel_sdm845/KernelSU
+           expr 10000 + $(git rev-list --count HEAD) + 200 > /home/runner/ksu_ver
+           git config --global user.email "asfasdas@gmail.com"
+           git config --global user.name "asdasfgas"
+           git remote add target https://github.com/CZB666-wdnmd/KernelSU.git
+           git fetch target
+           git cherry-pick -n d79982af8c1679dfc449125a132004a43f194a96
+
+       - name: Build
+         run: |
+           PATH=/hone/runner/origin/build-tools:$PATH 
+           PATH=/home/runner/clang/bin:$PATH 
+           PERL5LIB=/home/runner/tools-evolution/common/perl-base 
+           PATH=/home/runner/tools-evolution/linux-x86/bin:/home/runner/clang/bin:$PATH 
+           BISON_PKGDATADIR=/home/runner/build-tools/common/bison 
+           HOSTCFLAGS="--sysroot=/home/runner/glibc/sysroot -I/home/runner/kernel-build-tools/linux-x86/include"
+           HOSTLDFLAGS="--sysroot=/home/runner/glibc/sysroot -Wl,-rpath,/home/runner/kernel-build-tools/linux-x86/lib64 -L /home/runner/kernel-build-tools/linux-x86/lib64 -fuse-ld=lld --rtlib=compiler-rt"
+           LLVM=1
+           LLVM_IAS=1
+           LZ4=/home/runner/kernel-build-tools/linux-x86/bin/lz4
+           LEX=/home/runner/build-tools/linux-x86/bin/flex
+           YACC=/home/runner/build-tools/linux-x86/bin/bison
+           M4=/home/runner/build-tools/linux-x86/bin/m4
+           PAHOLE=/home/runner/kernel-build-tools/linux-x86/bin/pahole
+           DTC_EXT=/home/runner/origin/build-tools/dtc
+           TARGET_PRODUCT=venus
+           ARCH=arm64
+           CC="/usr/bin/ccache clang --cuda-path=/dev/null --hip-path=/dev/null"
+           O=/home/runner/out
+           /home/runner/build-tools/linux-x86/bin/make -j28 -C kernel/xiaomi/sm8350 vendor/lahaina-qgki_defconfig vendor/debugfs.config vendor/xiaomi_QGKI.config vendor/venus_QGKI.config
+           /home/runner/build-tools/linux-x86/bin/make -j28 -C kernel/xiaomi/sm8350 Image
+
+           
+       - name: Make boot.img
+         run: |
+           cp /home/runner/kernel_sdm845/out/arch/arm64/boot/Image  /home/runner/bootedit/img/kernel
+           cd /home/runner/bootedit/img
+           chmod +x ./magiskboot
+           ./magiskboot repack ./boot.img ./ksu-boot.img
+           echo "KernelSU version: "+$(cat /home/runner/ksu_ver) >> $GITHUB_STEP_SUMMARY
+           echo "Boot image for evolution_equuleus-uq1a.240105.004-01300259-UNOFFICIAL" >> $GITHUB_STEP_SUMMARY
+           
+       - name: Upload boot.img
+         if: success()
+         uses: actions/upload-artifact@v3
+         with:
+           name: ksu-boot.img
+           path: "/home/runner/bootedit/img/ksu-boot.img"
