@@ -51,7 +51,7 @@ jobs:
          run: |
            cd /home/runner/kernel_sm8350
            curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
-           cd /home/runner/kernel_sdm845/KernelSU
+           cd /home/runner/kernel_sm8350/KernelSU
            expr 10000 + $(git rev-list --count HEAD) + 200 > /home/runner/ksu_ver
            git config --global user.email "asfasdas@gmail.com"
            git config --global user.name "asdasfgas"
