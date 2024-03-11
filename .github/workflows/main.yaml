@@ -61,6 +61,7 @@ jobs:
 
        - name: Build
          run: |
+           sudo df -h
            export PATH=/hone/runner/origin/build-tools:$PATH 
            export PATH=/home/runner/clang/bin:$PATH 
            export PERL5LIB=/home/runner/tools-evolution/common/perl-base 
