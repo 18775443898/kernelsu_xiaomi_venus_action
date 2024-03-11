@@ -22,7 +22,7 @@ jobs:
        - name: Download kernel source
          run: |
            cd /home/runner
-           git clone https://github.com/CZB666-wdnmd/kernel_xiaomi_sm8350.git -b udc-ksu --depth=1 kernel_sm8350
+           git clone https://github.com/CZB666-wdnmd/kernel_xiaomi_sm8350.git -b udc_ksu --depth=1 kernel_sm8350
            
        - name: Prepare build tools
          run: |
