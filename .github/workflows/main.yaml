@@ -77,7 +77,7 @@ jobs:
            export YACC=/home/runner/build-tools/linux-x86/bin/bison
            export M4=/home/runner/build-tools/linux-x86/bin/m4
            export PAHOLE=/home/runner/kernel-build-tools/linux-x86/bin/pahole
-           export DTC_EXT=/home/runner/origin/build-tools/dtc
+           export DTC_EXT=/home/runner/origin/build_tools/dtc
            export TARGET_PRODUCT=venus
            export ARCH=arm64
            export CC="/usr/bin/ccache clang --cuda-path=/dev/null --hip-path=/dev/null"
