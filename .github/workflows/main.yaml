@@ -28,22 +28,30 @@ jobs:
          run: |
            cd /home/runner
            git clone https://github.com/LineageOS/android_prebuilts_tools-lineage --depth=1 tools-evolution
+           echo "https://android.googlesource.com/platform/prebuilts/build-tools/+archive/9f5818bd6f5a82ecec8b18e0bf2dbd21c93fa7ee.tar.gz" > download.list
+           echo "out=build-tools.tar.gz" >> download.list
+           echo "https://android.googlesource.com/kernel/prebuilts/build-tools/+archive/083e34d8c2c4239be4967172427268c267585951.tar.gz" > download.list
+           echo "out=kernel-build-tools.tar.gz" >> download.list
+           echo "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+archive/0f4036126fd70c072d3b7bb7fda9dc05b6d218f5.tar.gz" > download.list
+            echo "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r487747c.tar.gz" > download.list
+           echo "out=clang.tar.gz" >> download.list
+           aria2c -x6 --input-file=download.list
            mkdir /home/runner/build-tools
            cd /home/runner/build-tools
-           wget -O build-tools.tar.gz https://android.googlesource.com/platform/prebuilts/build-tools/+archive/9f5818bd6f5a82ecec8b18e0bf2dbd21c93fa7ee.tar.gz
+           mv ../build-tools.tar.gz ./build-tools.tar.gz
            tar xzvf build-tools.tar.gz
            mkdir /home/runner/kernel-build-tools
            cd /home/runner/kernel-build-tools
-           wget -O kernel-build-tools.tar.gz https://android.googlesource.com/kernel/prebuilts/build-tools/+archive/083e34d8c2c4239be4967172427268c267585951.tar.gz
+           mv ../kernel-build-tools.tar.gz ./kernel-build-tools.tar.gz
            tar xzvf kernel-build-tools.tar.gz
            mkdir /home/runner/glibc
            cd /home/runner/glibc
-           wget -O glibc.tar.gz https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+archive/0f4036126fd70c072d3b7bb7fda9dc05b6d218f5.tar.gz
+           mv ../glibc.tar.gz ./glibc.tar.gz
            tar xzvf glibc.tar.gz
            mkdir /home/runner/clang
            cd /home/runner/clang
-           wget https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r487747c.tar.gz
-           tar xzvf clang-r487747c.tar.gz
+           mv ../clang.tar.gz ./clang.tar.gz
+           tar xzvf clang.tar.gz
            cd /home/runner/
            git clone https://github.com/CZB666-wdnmd/kernelsu_xiaomi_equuleus_action.git origin
            
