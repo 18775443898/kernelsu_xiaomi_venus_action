@@ -17,7 +17,7 @@ jobs:
        - name: Setup build kernel environment
          run: |
           sudo apt-get update
-          sudo apt install ccache curl git python-is-python3
+          sudo apt install ccache curl git python-is-python3 aria2
 
        - name: Download kernel source
          run: |
@@ -33,7 +33,7 @@ jobs:
            echo "https://android.googlesource.com/kernel/prebuilts/build-tools/+archive/083e34d8c2c4239be4967172427268c267585951.tar.gz" > download.list
            echo "out=kernel-build-tools.tar.gz" >> download.list
            echo "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/host/x86_64-linux-glibc2.17-4.8/+archive/0f4036126fd70c072d3b7bb7fda9dc05b6d218f5.tar.gz" > download.list
-            echo "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r487747c.tar.gz" > download.list
+           echo "https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/main/clang-r487747c.tar.gz" > download.list
            echo "out=clang.tar.gz" >> download.list
            aria2c -x6 --input-file=download.list
            mkdir /home/runner/build-tools
