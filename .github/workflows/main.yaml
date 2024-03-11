@@ -61,25 +61,25 @@ jobs:
 
        - name: Build
          run: |
-           PATH=/hone/runner/origin/build-tools:$PATH 
-           PATH=/home/runner/clang/bin:$PATH 
-           PERL5LIB=/home/runner/tools-evolution/common/perl-base 
-           PATH=/home/runner/tools-evolution/linux-x86/bin:/home/runner/clang/bin:$PATH 
-           BISON_PKGDATADIR=/home/runner/build-tools/common/bison 
-           HOSTCFLAGS="--sysroot=/home/runner/glibc/sysroot -I/home/runner/kernel-build-tools/linux-x86/include"
-           HOSTLDFLAGS="--sysroot=/home/runner/glibc/sysroot -Wl,-rpath,/home/runner/kernel-build-tools/linux-x86/lib64 -L /home/runner/kernel-build-tools/linux-x86/lib64 -fuse-ld=lld --rtlib=compiler-rt"
-           LLVM=1
-           LLVM_IAS=1
-           LZ4=/home/runner/kernel-build-tools/linux-x86/bin/lz4
-           LEX=/home/runner/build-tools/linux-x86/bin/flex
-           YACC=/home/runner/build-tools/linux-x86/bin/bison
-           M4=/home/runner/build-tools/linux-x86/bin/m4
-           PAHOLE=/home/runner/kernel-build-tools/linux-x86/bin/pahole
-           DTC_EXT=/home/runner/origin/build-tools/dtc
-           TARGET_PRODUCT=venus
-           ARCH=arm64
-           CC="/usr/bin/ccache clang --cuda-path=/dev/null --hip-path=/dev/null"
-           O=/home/runner/out
+           export PATH=/hone/runner/origin/build-tools:$PATH 
+           export PATH=/home/runner/clang/bin:$PATH 
+           export PERL5LIB=/home/runner/tools-evolution/common/perl-base 
+           export PATH=/home/runner/tools-evolution/linux-x86/bin:/home/runner/clang/bin:$PATH 
+           export BISON_PKGDATADIR=/home/runner/build-tools/common/bison 
+           export HOSTCFLAGS="--sysroot=/home/runner/glibc/sysroot -I/home/runner/kernel-build-tools/linux-x86/include"
+           export HOSTLDFLAGS="--sysroot=/home/runner/glibc/sysroot -Wl,-rpath,/home/runner/kernel-build-tools/linux-x86/lib64 -L /home/runner/kernel-build-tools/linux-x86/lib64 -fuse-ld=lld --rtlib=compiler-rt"
+           export LLVM=1
+           export LLVM_IAS=1
+           export LZ4=/home/runner/kernel-build-tools/linux-x86/bin/lz4
+           export LEX=/home/runner/build-tools/linux-x86/bin/flex
+           export YACC=/home/runner/build-tools/linux-x86/bin/bison
+           export M4=/home/runner/build-tools/linux-x86/bin/m4
+           export PAHOLE=/home/runner/kernel-build-tools/linux-x86/bin/pahole
+           export DTC_EXT=/home/runner/origin/build-tools/dtc
+           export TARGET_PRODUCT=venus
+           export ARCH=arm64
+           export CC="/usr/bin/ccache clang --cuda-path=/dev/null --hip-path=/dev/null"
+           export O=/home/runner/out
            /home/runner/build-tools/linux-x86/bin/make -j6 -C /home/runner/kernel_sm8350 vendor/lahaina-qgki_defconfig vendor/debugfs.config vendor/xiaomi_QGKI.config vendor/venus_QGKI.config
            /home/runner/build-tools/linux-x86/bin/make -j6 -C /home/runner/kernel_sm8350 Image
 
